@@ -2,7 +2,7 @@
 
 Projeto desenvolvido para a disciplina de Aprendizado Profundo com Redes Neurais Convolucionais. A solução utiliza uma rede neural do tipo Multilayer Perceptron (MLP) para classificar registros de ocorrências policiais da capital paulista entre Roubo e Furto, com base em atributos contextuais de espaço e tempo.
 
-Acesse a aplicação web online: [COLE_AQUI_O_LINK_DO_STREAMLIT_CLOUD]
+Acesse a aplicação web online: [https://gs-redes-neurais-9wcksf4wa78qpb7afj4ssb.streamlit.app]
 
 
 
