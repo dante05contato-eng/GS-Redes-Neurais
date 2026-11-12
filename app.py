@@ -1,15 +1,43 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import joblib
 import tensorflow as tf
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
 
 st.set_page_config(page_title="Classificador de Ocorrências - SP", layout="centered")
 
 @st.cache_resource
 def load_assets():
     model = tf.keras.models.load_model('best_mlp_model.keras')
-    preprocessor = joblib.load('preprocessor.pkl')
+    
+    # Reconstrói o encoder determinístico com as mesmas categorias e ordem alfabética do treino
+    regioes = ['Centro', 'Zona Leste', 'Zona Norte', 'Zona Oeste', 'Zona Sul']
+    periodos = ['Madrugada', 'Manhã', 'Noite', 'Tarde']
+    dias = ['Domingo', 'Quarta', 'Quinta', 'Segunda', 'Sexta', 'Sábado', 'Terça']
+    locais = ['Comércio/Serviços', 'Residência', 'Transporte coletivo', 'Via pública']
+    
+    cat_features = ['REGIAO', 'PERIODO', 'DIA_SEMANA', 'TIPO_LOCAL']
+    preprocessor = ColumnTransformer(
+        transformers=[(
+            'cat',
+            OneHotEncoder(
+                categories=[regioes, periodos, dias, locais],
+                drop='first',
+                sparse_output=False
+            ),
+            cat_features
+        )]
+    )
+    # Ajusta a estrutura interna sem depender de ficheiro .pkl externo
+    dummy_df = pd.DataFrame([{
+        'REGIAO': 'Centro',
+        'PERIODO': 'Madrugada',
+        'DIA_SEMANA': 'Domingo',
+        'TIPO_LOCAL': 'Comércio/Serviços'
+    }])
+    preprocessor.fit(dummy_df)
+    
     return model, preprocessor
 
 model, preprocessor = load_assets()
